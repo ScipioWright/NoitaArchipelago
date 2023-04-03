@@ -81,6 +81,9 @@ function NGSpawnItems(item_list)
 				end
 			end
 			item_list[item] = nil
+		elseif item == 110032 then
+			perk_spawn(813, -90, item_table[item].perk)
+			item_list[item] = nil
 			-- give the player their perks
 		elseif item_table[item].perk ~= nil then
 			for _ = 1, quantity do
