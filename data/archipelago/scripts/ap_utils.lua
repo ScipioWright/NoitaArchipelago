@@ -252,25 +252,46 @@ function create_ap_entity_from_flags(location, x, y)
 
 	local item_filename = "ap_junk_shopitem.xml"
 	local item_description = "$ap_shopdescription_junk"
+	local is_progression = false
+	local is_useful = false
+	local is_trap = false
+	local is_filler = false
 	if flags == nil then
 		-- todo: figure out how to make it so touching a pedestal item that broke like this doesn't crash the game
 		print("flags == nil")
 		print("error is at " .. x .. ", " .. y)
 		EntityLoadAtPlayer("data/archipelago/entities/items/pickup/ap_error_book_flags.xml")
 		item_description = "problem with item in create_ap_entity_from_flags"
-	elseif bit.band(flags, AP.ITEM_FLAG_USEFUL) ~= 0 then
-		item_filename = "ap_useful_shopitem.xml"
-		item_description = "$ap_shopdescription_useful"
-	elseif bit.band(flags, AP.ITEM_FLAG_PROGRESSION) ~= 0 then
-		item_filename = "ap_progression_shopitem.xml"
-		item_description = "$ap_shopdescription_progression"
-	elseif bit.band(flags, AP.ITEM_FLAG_TRAP) ~= 0 then
-		item_filename = "ap_trap_item.xml"
-		item_description = "$ap_shopdescription_trap" .. tostring(Random(1, 8))
+
+	else
+		if bit.band(flags, AP.ITEM_FLAG_PROGRESSION) ~= 0 then
+			is_progression = true
+		end
+		if bit.band(flags, AP.ITEM_FLAG_USEFUL) ~= 0 then
+			is_useful = true
+		end
+		if bit.band(flags, AP.ITEM_FLAG_TRAP) ~= 0 then
+			is_trap = true
+		end
+		if is_progression == false and is_useful == false and is_trap == false then
+			is_filler = true
+		end
+	--elseif bit.band(flags, AP.ITEM_FLAG_USEFUL) ~= 0 then
+	--	item_filename = "ap_useful_shopitem.xml"
+	--	item_description = "$ap_shopdescription_useful"
+	--elseif bit.band(flags, AP.ITEM_FLAG_PROGRESSION) ~= 0 then
+	--	item_filename = "ap_progression_shopitem.xml"
+	--	item_description = "$ap_shopdescription_progression"
+	--elseif bit.band(flags, AP.ITEM_FLAG_TRAP) ~= 0 then
+	--	item_filename = "ap_trap_item.xml"
+	--	item_description = "$ap_shopdescription_trap" .. tostring(Random(1, 8))
 	end
 
-	local item_entity = EntityLoad("data/archipelago/entities/items/" .. item_filename, x, y)
-	if bit.band(flags, AP.ITEM_FLAG_TRAP) ~= 0 and location.is_our_item then
+	local item_entity = EntityLoad("data/archipelago/entities/items/ap_shop_item.xml", x, y)
+	if is_trap == true then
+		local sprite_comp = EntityGetFirstComponent(item_entity, "SpriteComponent")
+	end
+	if is_trap == true and location.is_our_item then
 		EntityAddComponent(item_entity, "LuaComponent", {
 			_tags="archipelago",
 			script_item_picked_up="data/archipelago/scripts/items/ap_trap.lua",

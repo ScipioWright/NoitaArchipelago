@@ -190,7 +190,7 @@ local mod_settings =
 				ui_description = translate("$ap_menu_server_settings_debug_items_desc"),
 				value_default = false,
 				scope = MOD_SETTING_SCOPE_NEW_GAME,
-				hidden = true,
+				hidden = false,
 			},
 		},
 	},
