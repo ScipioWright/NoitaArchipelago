@@ -52,36 +52,22 @@ local ap = nil
 
 -- Toggles DeathLink
 local function SetDeathLinkEnabled(enabled)
-	Log.Info("test 1")
 	if enabled then
-		Log.Info("test 2")
 		if death_link_status == true then
-			Log.Info("test 3")
 			-- it's already enabled, so no need to continue here
 			return
 		end
-		Log.Info("test 4")
 		table.insert(connect_tags, "DeathLink")
-		Log.Info("test 5")
 		death_link_status = true
-		Log.Info("test 6")
 	end
-	Log.Info("test 7")
 	if not enabled then
-		Log.Info("test 8")
 		if death_link_status == false then
-			Log.Info("test 9")
 			return
 		end
-		Log.Info("test 10")
 		connect_tags = {"Lua-APClientPP"}
-		Log.Info("test 11")
 		death_link_status = false
-		Log.Info("test 12")
 	end
-	Log.Info("test 13")
 	ap:ConnectUpdate(nil, connect_tags)
-	Log.Info("test 14")
 end
 
 
