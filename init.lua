@@ -36,6 +36,7 @@ local ConnIcon = dofile("data/archipelago/ui/connection_icon.lua")
 -- See Options.py on the AP-side
 -- Can also use to indicate whether AP sent the connected packet
 local slot_options = nil
+local connect_tags = {"Lua-APClientPP"}
 
 local last_death_time = 0
 local current_player_slot = -1
@@ -51,12 +52,36 @@ local ap = nil
 
 -- Toggles DeathLink
 local function SetDeathLinkEnabled(enabled)
-	local conn_tags = { "Lua-APClientPP" }
+	Log.Info("test 1")
 	if enabled then
-		table.insert(conn_tags, "DeathLink")
+		Log.Info("test 2")
+		if death_link_status == true then
+			Log.Info("test 3")
+			-- it's already enabled, so no need to continue here
+			return
+		end
+		Log.Info("test 4")
+		table.insert(connect_tags, "DeathLink")
+		Log.Info("test 5")
 		death_link_status = true
+		Log.Info("test 6")
 	end
-	ap:ConnectUpdate(nil, conn_tags)
+	Log.Info("test 7")
+	if not enabled then
+		Log.Info("test 8")
+		if death_link_status == false then
+			Log.Info("test 9")
+			return
+		end
+		Log.Info("test 10")
+		connect_tags = {"Lua-APClientPP"}
+		Log.Info("test 11")
+		death_link_status = false
+		Log.Info("test 12")
+	end
+	Log.Info("test 13")
+	ap:ConnectUpdate(nil, connect_tags)
+	Log.Info("test 14")
 end
 
 
@@ -74,13 +99,14 @@ local function IsDeathLinkEnabled()
 		return 0
 	end
 	local death_link_setting = ModSettingGet("archipelago.death_link")
-	if slot_options.death_link == 0 then
+	if slot_options.death_link == 0 or death_link_setting == "off" then
 		return 0
 	elseif death_link_setting == "on" then
 		return 1
 	elseif death_link_setting == "traps" then
 		return 2
 	else
+		Log.Info(death_link_setting)
 		Log.Error("Error in IsDeathLinkEnabled")
 		return 0
 	end
@@ -346,7 +372,7 @@ function RECV_MSG.Connected()
 
 	SetupLocationScouts()
 	-- Enable deathlink if the setting on the server and the mod setting said to
-	SetDeathLinkEnabled(IsDeathLinkEnabled())
+	SetDeathLinkEnabled(IsDeathLinkEnabled() > 0)
 end
 
 -- https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/network%20protocol.md#receiveditems
